@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="crm_lead_view_form_inherit_custom" model="ir.ui.view">
+        <field name="name">crm.lead.form.inherit.custom</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Mandatory" name="custom_info">
+                    <group>
+                        <group string="Prospek">
+                            <field name="prospect_source" />
+                            <field name="est_timeline_start_date" />
+                            <field name="est_timeline_end_date" />
+                        </group>
+                        <group string="Analisis">
+                            <field name="pain_point" />
+                            <field name="business_impact" />
+                            <field name="competitors" />
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Decision Making">
+                            <field name="is_decision_maker" />
+                            <field name="decision_process" />
+                            <field name="decision_criteria" />
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

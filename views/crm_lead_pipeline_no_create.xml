@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="crm_case_kanban_view_leads_no_create" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.lead.no.create</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads" />
+        <field name="mode">primary</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <kanban position="attributes">
+                <attribute name="create">false</attribute>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="crm_case_tree_view_oppor_no_create" model="ir.ui.view">
+        <field name="name">crm.lead.list.opportunity.no.create</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor" />
+        <field name="mode">primary</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list position="attributes">
+                <attribute name="create">false</attribute>
+            </list>
+        </field>
+    </record>
+
+    <record id="crm_lead_view_form_no_create" model="ir.ui.view">
+        <field name="name">crm.lead.form.no.create</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form" />
+        <field name="mode">primary</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <form position="attributes">
+                <attribute name="create">false</attribute>
+            </form>
+        </field>
+    </record>
+
+    <record id="crm.crm_lead_action_pipeline_view_kanban" model="ir.actions.act_window.view">
+        <field name="view_id" ref="crm_case_kanban_view_leads_no_create" />
+    </record>
+
+    <record id="crm.crm_lead_action_pipeline_view_tree" model="ir.actions.act_window.view">
+        <field name="view_id" ref="crm_case_tree_view_oppor_no_create" />
+    </record>
+
+    <!-- Kalau ingin form juga tidak bisa create dari Pipeline -->
+    <!-- <record id="crm.crm_lead_action_pipeline_view_form" model="ir.actions.act_window.view"> -->
+    <!--     <field name="view_id" ref="crm_lead_view_form_no_create"/> -->
+    <!-- </record> -->
+
+</odoo>

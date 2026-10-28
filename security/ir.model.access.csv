@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_parametrik_crm_parametrik_crm,parametrik_crm.parametrik_crm,model_parametrik_crm_parametrik_crm,base.group_user,1,1,1,1
+access_parametrik_crm_parametrik_crm,parametrik_crm.parametrik_crm,model_parametrik_crm_parametrik_crm,base.group_system,1,1,1,1
