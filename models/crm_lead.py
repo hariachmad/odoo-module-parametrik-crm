@@ -15,6 +15,11 @@ class CrmLead(models.Model):
         ],
         string="Prospect Source",
     )
+    CONVERT_REQUIRED_CANDIDATES = [
+    'prospect_source', 'est_timeline_start_date', 'est_timeline_end_date',
+    'pain_point', 'business_impact', 'is_decision_maker',
+    'decision_process', 'decision_criteria', 'competitors','budget'
+]
     est_timeline_start_date = fields.Datetime()
     est_timeline_end_date = fields.Datetime()
     pain_point = fields.Text()
@@ -29,6 +34,10 @@ class CrmLead(models.Model):
     decision_process = fields.Text()
     decision_criteria = fields.Text()
     competitors = fields.Text()
+    budget = fields.Monetary(
+    string="Budget",
+    currency_field="company_currency",
+)
 
     @api.constrains('est_timeline_start_date', 'est_timeline_end_date')
     def _check_timeline_dates(self):
@@ -43,7 +52,19 @@ class CrmLead(models.Model):
                 raise ValidationError("End date harus lebih besar atau sama dengan Start date.")
     
     def _get_required_fields_for_convert(self):
-        return ['prospect_source', 'est_timeline_start_date', 'est_timeline_end_date', 'pain_point', 'business_impact', 'is_decision_maker', 'decision_process','decision_criteria','competitors']
+        params = self.env['ir.config_parameter'].sudo().search(
+            [('key', '=like', 'crm_custom.req_%')]
+        )
+        enabled = {p.key for p in params if p.value}
+
+        if 'crm_custom.req_convert_enabled' not in enabled:
+            return []
+
+        return [
+            field_name
+            for field_name in self.CONVERT_REQUIRED_CANDIDATES
+            if 'crm_custom.req_%s' % field_name in enabled
+        ]
 
     def _check_required_fields_for_convert(self):
         field_names = self._get_required_fields_for_convert()
@@ -52,15 +73,15 @@ class CrmLead(models.Model):
             missing = [
                 lead._fields[fname].string
                 for fname in field_names
-                if not lead[fname]
+                if fname in lead._fields and not lead[fname]
             ]
             if missing:
                 errors.append("- %s: %s" % (lead.display_name, ", ".join(missing)))
         if errors:
-            raise UserError((
-                "Lengkapi data berikut sebelum convert ke opportunity:\n%s",
-                "\n".join(errors),
-            ))
+            raise UserError(
+                ("Lengkapi data berikut sebelum convert ke opportunity:\n%s")
+                % "\n".join(errors)
+            )
 
     def convert_opportunity(self, partner, user_ids=None, team_id=False):
         self._check_required_fields_for_convert()

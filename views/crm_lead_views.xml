@@ -10,6 +10,7 @@
                     <group>
                         <group string="Prospek">
                             <field name="prospect_source" />
+                            <field name="budget" />
                             <field name="est_timeline_start_date" />
                             <field name="est_timeline_end_date" />
                         </group>

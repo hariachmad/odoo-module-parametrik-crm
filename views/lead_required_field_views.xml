@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_lead_required" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.lead.required</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="crm.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='crm']" position="inside">
+                <block title="Field Wajib saat Convert ke Opportunity">
+                    <setting string="Aktifkan Validasi"
+                        help="Jika dimatikan, semua field menjadi optional saat convert.">
+                        <field name="lead_req_convert_enabled" />
+                    </setting>
+                    <setting string="Prospect Source" invisible="not lead_req_convert_enabled">
+                        <field name="lead_req_prospect_source" />
+                    </setting>
+                    <setting string="Est. Timeline Start Date"
+                        invisible="not lead_req_convert_enabled">
+                        <field name="lead_req_est_timeline_start_date" />
+                    </setting>
+                    <setting string="Est. Timeline End Date"
+                        invisible="not lead_req_convert_enabled">
+                        <field name="lead_req_est_timeline_end_date" />
+                    </setting>
+                    <setting string="Pain Point" invisible="not lead_req_convert_enabled">
+                        <field name="lead_req_pain_point" />
+                    </setting>
+                    <setting string="Business Impact" invisible="not lead_req_convert_enabled">
+                        <field name="lead_req_business_impact" />
+                    </setting>
+                    <setting string="Is Decision Maker" invisible="not lead_req_convert_enabled">
+                        <field name="lead_req_is_decision_maker" />
+                    </setting>
+                    <setting string="Decision Process" invisible="not lead_req_convert_enabled">
+                        <field name="lead_req_decision_process" />
+                    </setting>
+                    <setting string="Decision Criteria" invisible="not lead_req_convert_enabled">
+                        <field name="lead_req_decision_criteria" />
+                    </setting>
+                    <setting string="Competitors" invisible="not lead_req_convert_enabled">
+                        <field name="lead_req_competitors" />
+                    </setting>
+                    <setting string="Budget" invisible="not lead_req_convert_enabled">
+                        <field name="lead_req_budget" />
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>
