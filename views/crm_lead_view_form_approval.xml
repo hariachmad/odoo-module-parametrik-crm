@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="crm_lead_view_form_approval" model="ir.ui.view">
+        <field name="name">crm.lead.form.approval</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_request_approval" type="object"
+                    string="Request Approval"
+                    invisible="approval_state not in ('draft', 'rejected')" />
+                <button name="action_approve" type="object" string="Approve"
+                    class="btn-primary"
+                    groups="parametrik_crm.group_director"
+                    invisible="approval_state != 'pending'" />
+                <button name="action_reject" type="object" string="Reject"
+                    groups="parametrik_crm.group_director"
+                    invisible="approval_state != 'pending'" />
+            </xpath>
+            <field name="tag_ids" position="after">
+                <field name="approval_state" widget="badge" />
+                <field name="approved_by" invisible="not approved_by" />
+                <field name="approved_date" invisible="not approved_date" />
+            </field>
+        </field>
+    </record>
+</odoo>

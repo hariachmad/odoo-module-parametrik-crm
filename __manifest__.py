@@ -18,7 +18,10 @@ CRM especially for parametrik
         # 'security/ir.model.access.csv',
         "views/crm_lead_views.xml",
         "views/crm_lead_pipeline_no_create.xml",
+        "views/crm_lead_required_field_views.xml",
+        "views/crm_lead_view_form_approval.xml",
         "data/crm_lead_required_data.xml",
+        "security/security.xml",
     ],
     # only loaded in demonstration mode
     "demo": [
