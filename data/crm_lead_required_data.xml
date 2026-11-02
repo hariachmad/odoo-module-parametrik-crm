@@ -1,0 +1,42 @@
+<data noupdate="1">
+    <record id="param_req_convert_enabled" model="ir.config_parameter">
+        <field name="key">crm_custom.req_convert_enabled</field>
+        <field name="value">True</field>
+    </record>
+    <record id="param_req_pain_point" model="ir.config_parameter">
+        <field name="key">crm_custom.req_pain_point</field>
+        <field name="value">True</field>
+    </record>
+    <record id="param_req_budget" model="ir.config_parameter">
+        <field name="key">crm_custom.req_budget</field>
+        <field name="value">True</field>
+    </record>
+    <record id="param_req_prospect_source" model="ir.config_parameter">
+        <field name="key">crm_custom.req_prospect_source</field>
+        <field name="value">True</field>
+    </record>
+    <record id="param_req_est_timeline_start_date" model="ir.config_parameter">
+        <field name="key">crm_custom.req_est_timeline_start_date</field>
+        <field name="value">True</field>
+    </record>
+    <record id="param_req_est_timeline_end_date" model="ir.config_parameter">
+        <field name="key">crm_custom.req_est_timeline_end_date</field>
+        <field name="value">True</field>
+    </record>
+    <record id="param_req_business_impact" model="ir.config_parameter">
+        <field name="key">crm_custom.req_business_impact</field>
+        <field name="value">True</field>
+    </record>
+    <record id="param_req_is_decision_maker" model="ir.config_parameter">
+        <field name="key">crm_custom.req_is_decision_maker</field>
+        <field name="value">True</field>
+    </record>
+    <record id="param_req_decision_process" model="ir.config_parameter">
+        <field name="key">crm_custom.req_decision_process</field>
+        <field name="value">True</field>
+    </record>
+    <record id="param_req_competitors" model="ir.config_parameter">
+        <field name="key">crm_custom.req_competitors</field>
+        <field name="value">True</field>
+    </record>
+</data>

@@ -1,0 +1,8 @@
+<odoo>
+    <record id="group_business_development" model="res.groups">
+        <field name="name">Business Development</field>
+    </record>
+    <record id="group_director" model="res.groups">
+        <field name="name">Director</field>
+    </record>
+</odoo>

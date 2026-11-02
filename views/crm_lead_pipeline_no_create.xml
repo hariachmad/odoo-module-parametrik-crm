@@ -48,9 +48,4 @@
         <field name="view_id" ref="crm_case_tree_view_oppor_no_create" />
     </record>
 
-    <!-- Kalau ingin form juga tidak bisa create dari Pipeline -->
-    <!-- <record id="crm.crm_lead_action_pipeline_view_form" model="ir.actions.act_window.view"> -->
-    <!--     <field name="view_id" ref="crm_lead_view_form_no_create"/> -->
-    <!-- </record> -->
-
 </odoo>
