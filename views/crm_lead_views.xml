@@ -8,13 +8,13 @@
             <xpath expr="//notebook" position="inside">
                 <page string="Mandatory" name="custom_info">
                     <group>
-                        <group string="Prospek">
+                        <group string="Prospect">
                             <field name="prospect_source" />
                             <field name="budget" />
                             <field name="est_timeline_start_date" />
                             <field name="est_timeline_end_date" />
                         </group>
-                        <group string="Analisis">
+                        <group string="Analysis">
                             <field name="pain_point" />
                             <field name="business_impact" />
                             <field name="competitors" />

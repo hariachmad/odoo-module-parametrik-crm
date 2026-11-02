@@ -4,11 +4,12 @@ from datetime import datetime
 from odoo.exceptions import UserError
 
 REQUIRED_DMS_FOLDER_NAMES = [
-    "Costumer Requirements",
+    "Customer Requirements",
 ]
 
-STAGE_APPROVAL_FROM = ["Qualified"]
-STAGE_APPROVAL_TO = ["Proposition"]
+STAGE_APPROVAL_FROM = ["Qualified","New"]
+STAGE_APPROVAL_TO = ["Proposition", "Won"]
+
 
 class CrmLead(models.Model):
     _inherit = "crm.lead"
@@ -23,10 +24,10 @@ class CrmLead(models.Model):
         string="Prospect Source",
     )
     CONVERT_REQUIRED_CANDIDATES = [
-    'prospect_source', 'est_timeline_start_date', 'est_timeline_end_date',
-    'pain_point', 'business_impact', 'is_decision_maker',
-    'decision_process', 'decision_criteria', 'competitors','budget'
-]
+        'prospect_source', 'est_timeline_start_date', 'est_timeline_end_date',
+        'pain_point', 'business_impact', 'is_decision_maker',
+        'decision_process', 'decision_criteria', 'competitors', 'budget'
+    ]
     est_timeline_start_date = fields.Datetime()
     est_timeline_end_date = fields.Datetime()
     pain_point = fields.Text()
@@ -35,16 +36,16 @@ class CrmLead(models.Model):
         string="Business Impact",
     )
     is_decision_maker = fields.Boolean(
-    string="Is Decision Maker",
-    help="Tandai jika contact ini adalah pengambil keputusan"
+        string="Is Decision Maker",
+        help="Check if this contact is the decision maker"
     )
     decision_process = fields.Text()
     decision_criteria = fields.Text()
     competitors = fields.Text()
     budget = fields.Monetary(
-    string="Budget",
-    currency_field="company_currency",
-)
+        string="Budget",
+        currency_field="company_currency",
+    )
     approval_state = fields.Selection(
         [
             ("draft", "Not Requested"),
@@ -60,12 +61,12 @@ class CrmLead(models.Model):
     )
     approved_by = fields.Many2one("res.users", readonly=True, copy=False)
     approved_date = fields.Datetime(readonly=True, copy=False)
-    
-    def _stage_matches(self,stage, names):
-            return bool(stage) and (stage.name or "").strip().casefold() in [
-                n.casefold() for n in names
-            ]
-    
+
+    def _stage_matches(self, stage, names):
+        return bool(stage) and (stage.name or "").strip().casefold() in [
+            n.casefold() for n in names
+        ]
+
     def write(self, vals):
         if "stage_id" in vals and not self.env.su:
             new_stage = self.env["crm.stage"].browse(vals["stage_id"])
@@ -76,7 +77,7 @@ class CrmLead(models.Model):
                 and self.filtered(lambda l: l.stage_id != new_stage)
             ):
                 raise UserError(
-                    "Hanya tim Business Development yang boleh memindahkan stage."
+                    "Only the Business Development team is allowed to move stages."
                 )
 
             for lead in self:
@@ -87,8 +88,8 @@ class CrmLead(models.Model):
                     and lead.approval_state != "approved"
                 ):
                     raise UserError(
-                        "Lead '%s' butuh approval Director sebelum pindah dari "
-                        "Qualified ke Proposition. Klik 'Request Approval' dulu."
+                        "Lead '%s' requires Director approval before moving from "
+                        "Qualified to Proposition. Please click 'Request Approval' first."
                         % lead.display_name
                     )
         if (
@@ -96,9 +97,9 @@ class CrmLead(models.Model):
             and not self.env.su
             and not self.env.context.get("approval_action")
         ):
-            raise UserError("Status approval hanya bisa diubah lewat tombol approval.")
+            raise UserError("The approval status can only be changed via the approval buttons.")
         return super().write(vals)
-    
+
     def action_set_won(self):
         return super(CrmLead, self.with_context(allow_stage_change=True)).action_set_won()
 
@@ -107,13 +108,13 @@ class CrmLead(models.Model):
         for record in self:
             now = datetime.now()
             if record.est_timeline_start_date and record.est_timeline_start_date < now:
-                raise ValidationError("Start date tidak boleh kurang dari waktu sekarang.")
+                raise ValidationError("Start date cannot be earlier than the current time.")
             if record.est_timeline_end_date and record.est_timeline_end_date < now:
-                raise ValidationError("End date tidak boleh kurang dari waktu sekarang.")
+                raise ValidationError("End date cannot be earlier than the current time.")
             if (record.est_timeline_start_date and record.est_timeline_end_date and
-                record.est_timeline_end_date < record.est_timeline_start_date):
-                raise ValidationError("End date harus lebih besar atau sama dengan Start date.")
-    
+                    record.est_timeline_end_date < record.est_timeline_start_date):
+                raise ValidationError("End date must be greater than or equal to Start date.")
+
     def _get_required_fields_for_convert(self):
         params = self.env['ir.config_parameter'].sudo().search(
             [('key', '=like', 'crm_custom.req_%')]
@@ -128,7 +129,7 @@ class CrmLead(models.Model):
             for field_name in self.CONVERT_REQUIRED_CANDIDATES
             if 'crm_custom.req_%s' % field_name in enabled
         ]
-    
+
     def _get_missing_dms_folders(self):
         self.ensure_one()
         roots = self.dms_directory_ids
@@ -158,12 +159,12 @@ class CrmLead(models.Model):
                 if fname in lead._fields and not lead[fname]
             ]
             for folder_name in lead._get_missing_dms_folders():
-                missing.append("File di folder '%s' (tab Documents)" % folder_name)
+                missing.append("File in folder '%s' (Documents tab)" % folder_name)
             if missing:
                 errors.append("- %s: %s" % (lead.display_name, ", ".join(missing)))
         if errors:
             raise UserError(
-                ("Lengkapi data berikut sebelum convert ke opportunity:\n%s")
+                ("Please complete the following data before converting to an opportunity:\n%s")
                 % "\n".join(errors))
 
     def convert_opportunity(self, partner, user_ids=None, team_id=False):
@@ -175,20 +176,20 @@ class CrmLead(models.Model):
     def action_request_approval(self):
         for lead in self:
             if lead.approval_state not in ("draft", "rejected"):
-                raise UserError("Approval sudah diajukan atau sudah disetujui.")
+                raise UserError("Approval has already been requested or approved.")
             lead.with_context(approval_action=True).write(
                 {"approval_state": "pending"}
             )
-            lead.message_post(body="Approval Director diajukan.")
+            lead.message_post(body="Director approval requested.")
         if not self._stage_matches(lead.stage_id, STAGE_APPROVAL_FROM):
-                raise UserError(
-                    "Approval hanya bisa diajukan saat lead berada di stage Qualified."
-                )
-    
+            raise UserError(
+                "Approval can only be requested when the lead is in the Qualified stage."
+            )
+
     def _check_is_director(self):
         if not self.env.user.has_group("parametrik_crm.group_director"):
-            raise UserError("Hanya Director yang boleh menyetujui atau menolak.")
-    
+            raise UserError("Only a Director can approve or reject.")
+
     def action_approve(self):
         self._check_is_director()
         self.with_context(approval_action=True).write({
@@ -204,7 +205,3 @@ class CrmLead(models.Model):
             "approved_by": self.env.user.id,
             "approved_date": fields.Datetime.now(),
         })
-    
-    
-        
-    

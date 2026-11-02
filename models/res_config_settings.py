@@ -1,10 +1,11 @@
 from odoo import fields, models
 
+
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
     lead_req_convert_enabled = fields.Boolean(
-        string='Aktifkan Validasi Field Wajib saat Convert',
+        string='Enable Required Field Validation on Convert',
         config_parameter='crm_custom.req_convert_enabled',
     )
     lead_req_prospect_source = fields.Boolean(

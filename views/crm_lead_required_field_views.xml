@@ -6,9 +6,9 @@
         <field name="inherit_id" ref="crm.res_config_settings_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//app[@name='crm']" position="inside">
-                <block title="Field Wajib saat Convert ke Opportunity">
-                    <setting string="Aktifkan Validasi"
-                        help="Jika dimatikan, semua field menjadi optional saat convert.">
+                <block title="Required Fields on Convert to Opportunity">
+                    <setting string="Enable Validation"
+                        help="If disabled, all fields become optional on convert.">
                         <field name="lead_req_convert_enabled" />
                     </setting>
                     <setting string="Prospect Source" invisible="not lead_req_convert_enabled">
@@ -22,7 +22,7 @@
                         invisible="not lead_req_convert_enabled">
                         <field name="lead_req_est_timeline_end_date" />
                     </setting>
-                    <setting string="Pain Point" invisible="not lead_req_convert_enabled">
+                    <setting string="Pain Point" invisible="not lead_req_convert_enabled">s
                         <field name="lead_req_pain_point" />
                     </setting>
                     <setting string="Business Impact" invisible="not lead_req_convert_enabled">

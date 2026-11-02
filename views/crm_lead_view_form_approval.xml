@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="crm.crm_lead_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
-                <button name="action_request_approval" type="object"
+                <button groups="parametrik_crm.group_business_development" name="action_request_approval" type="object"
                     string="Request Approval"
                     invisible="approval_state not in ('draft', 'rejected')" />
                 <button name="action_approve" type="object" string="Approve"
