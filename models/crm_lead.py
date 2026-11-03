@@ -13,6 +13,12 @@ STAGE_APPROVAL_TO = ["Proposition", "Won"]
 
 class CrmLead(models.Model):
     _inherit = "crm.lead"
+    
+    CONVERT_REQUIRED_CANDIDATES = [
+        'prospect_source', 'est_timeline_start_date', 'est_timeline_end_date',
+        'pain_point', 'business_impact', 'is_decision_maker',
+        'decision_process', 'decision_criteria', 'competitors', 'budget'
+    ]
 
     prospect_source = fields.Selection(
         [
@@ -23,28 +29,43 @@ class CrmLead(models.Model):
         ],
         string="Prospect Source",
     )
-    CONVERT_REQUIRED_CANDIDATES = [
-        'prospect_source', 'est_timeline_start_date', 'est_timeline_end_date',
-        'pain_point', 'business_impact', 'is_decision_maker',
-        'decision_process', 'decision_criteria', 'competitors', 'budget'
-    ]
-    est_timeline_start_date = fields.Datetime()
-    est_timeline_end_date = fields.Datetime()
-    pain_point = fields.Text()
+    est_timeline_start_date = fields.Datetime(
+        string="Estimated Timeline Start Date",
+        help="Estimated timeline start date",
+    )
+    est_timeline_end_date = fields.Datetime(
+        string="Estimated Timeline End Date",
+        help="Estimated timeline End date",
+    )
+    pain_point = fields.Text(
+        string="Pain Point",
+        help="What problem is the customer currently experiencing that makes them need our solution?",
+    )
     business_impact = fields.Selection(
         [("low", "Low"), ("medium", "Medium"), ("high", "High")],
         string="Business Impact",
+        help="How important is this project to customer's business",
     )
     is_decision_maker = fields.Boolean(
         string="Is Decision Maker",
         help="Check if this contact is the decision maker"
     )
-    decision_process = fields.Text()
-    decision_criteria = fields.Text()
-    competitors = fields.Text()
+    decision_process = fields.Text(
+        string="Decision Process",
+        help="How does the customer make purchasing decisions, and what steps must be completed before they agree to buy our product or service"
+    )
+    decision_criteria = fields.Text(
+        string="Decision Criteria",
+        help="What criteria must be met for the customer to buy our product or service"
+    )
+    competitors = fields.Text(
+        string="Competitors",
+        help="List of competitors"
+    )
     budget = fields.Monetary(
         string="Budget",
         currency_field="company_currency",
+        help="Budget for this project from customer",
     )
     approval_state = fields.Selection(
         [
