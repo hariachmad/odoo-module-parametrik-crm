@@ -2,6 +2,7 @@ from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 from datetime import datetime
 from odoo.exceptions import UserError
+from markupsafe import Markup
 
 REQUIRED_DMS_FOLDER_NAMES = [
     "Customer Requirements",
@@ -195,17 +196,43 @@ class CrmLead(models.Model):
         )
 
     def action_request_approval(self):
+        director_group = self.env.ref("parametrik_crm.group_director")
+        directors = director_group.users.filtered(lambda u: u.active)
+        if not directors:
+            raise UserError("There is no user in the Director group yet.")
+
         for lead in self:
             if lead.approval_state not in ("draft", "rejected"):
                 raise UserError("Approval has already been requested or approved.")
+            if not self._stage_matches(lead.stage_id, STAGE_APPROVAL_FROM):
+                raise UserError(
+                    "Approval can only be requested when the lead is in the "
+                    "Qualified stage."
+                )
+
             lead.with_context(approval_action=True).write(
                 {"approval_state": "pending"}
             )
-            lead.message_post(body="Director approval requested.")
-        if not self._stage_matches(lead.stage_id, STAGE_APPROVAL_FROM):
-            raise UserError(
-                "Approval can only be requested when the lead is in the Qualified stage."
+
+            lead.message_post(
+                body=Markup("<b>{user}</b> requested Director approval for {link}. Please review.").format(
+                    user=self.env.user.name,
+                    link=lead._get_html_link(),
+                ),
+                partner_ids=directors.partner_id.ids,
+                message_type="comment",
+                subtype_xmlid="mail.mt_comment",
             )
+
+            for director in directors:
+                lead.activity_schedule(
+                    "mail.mail_activity_data_todo",
+                    user_id=director.id,
+                    summary="Approval Opportunity",
+                    note="Please approve or reject this opportunity.",
+                    date_deadline=fields.Date.today(),
+                )
+        return True
 
     def _check_is_director(self):
         if not self.env.user.has_group("parametrik_crm.group_director"):
@@ -218,6 +245,12 @@ class CrmLead(models.Model):
             "approved_by": self.env.user.id,
             "approved_date": fields.Datetime.now(),
         })
+        for lead in self:
+            lead.activity_feedback(["mail.mail_activity_data_todo"])
+            lead.message_post(
+                body=Markup("Approved by <b>{user}</b>.").format(user=self.env.user.name),
+                subtype_xmlid="mail.mt_note",
+            )
 
     def action_reject(self):
         self._check_is_director()
@@ -226,3 +259,9 @@ class CrmLead(models.Model):
             "approved_by": self.env.user.id,
             "approved_date": fields.Datetime.now(),
         })
+        for lead in self:
+            lead.activity_feedback(["mail.mail_activity_data_todo"])
+            lead.message_post(
+                body=Markup("Rejected by <b>{user}</b>.").format(user=self.env.user.name),
+                subtype_xmlid="mail.mt_note",
+            )

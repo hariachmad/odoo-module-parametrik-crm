@@ -20,6 +20,7 @@ CRM especially for parametrik
         "views/crm_lead_pipeline_no_create.xml",
         "views/crm_lead_required_field_views.xml",
         "views/crm_lead_view_form_approval.xml",
+        "views/crm_lead_view_kanban_approval.xml",
         "data/crm_lead_required_data.xml",
         "security/security.xml",
     ],

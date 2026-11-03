@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="crm_lead_view_kanban_approval" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.approval</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='priority']" position="before">
+                <field name="approval_state" invisible="1" />
+                <span t-if="record.approval_state.raw_value == 'approved'"
+                      class="fa fa-check-circle text-success me-1"
+                      title="Approved by Director" />
+                <span t-elif="record.approval_state.raw_value == 'pending'"
+                      class="fa fa-clock-o text-warning me-1"
+                      title="Waiting Director approval" />
+                <span t-elif="record.approval_state.raw_value == 'rejected'"
+                      class="fa fa-times-circle text-danger me-1"
+                      title="Rejected by Director" />
+            </xpath>
+        </field>
+    </record>
+</odoo>
