@@ -18,9 +18,16 @@ class CrmLead(models.Model):
     CONVERT_REQUIRED_CANDIDATES = [
         'prospect_source', 'est_timeline_start_date', 'est_timeline_end_date',
         'pain_point', 'business_impact', 'is_decision_maker',
-        'decision_process', 'decision_criteria', 'competitors', 'budget'
+        'decision_process', 'decision_criteria', 'competitors', 'budget','champion'
     ]
-
+    
+    champion = fields.Many2one(
+        comodel_name='res.partner',
+        string='Champion',
+        domain="[('is_company', '=', False)]",
+        help='Champion / internal advocate dari customer',
+        tracking=True,
+    )
     prospect_source = fields.Selection(
         [
             ("website", "Website"),
@@ -81,6 +88,30 @@ class CrmLead(models.Model):
         copy=False,
         tracking=True,
     )
+    
+    reject_reason = fields.Text(
+    string="Rejection Reason",
+    readonly=True,
+    copy=False,
+    tracking=True,
+    help="Alasan penolakan approval",
+    )
+
+    rejected_by = fields.Many2one(
+        'res.users',
+        string="Rejected By",
+        readonly=True,
+        copy=False,
+        tracking=True,
+    )
+
+    rejected_date = fields.Datetime(
+        string="Rejected On",
+        readonly=True,
+        copy=False,
+        tracking=True,
+    )
+    
     approved_by = fields.Many2one("res.users", readonly=True, copy=False)
     approved_date = fields.Datetime(readonly=True, copy=False)
 
@@ -207,12 +238,15 @@ class CrmLead(models.Model):
             if not self._stage_matches(lead.stage_id, STAGE_APPROVAL_FROM):
                 raise UserError(
                     "Approval can only be requested when the lead is in the "
-                    "Qualified stage."
+                    "Qualified or New stage."
                 )
 
-            lead.with_context(approval_action=True).write(
-                {"approval_state": "pending"}
-            )
+            lead.with_context(approval_action=True).write({
+                "approval_state": "pending",
+                "reject_reason": False,
+                "rejected_by": False,
+                "rejected_date": False,
+            })
 
             lead.message_post(
                 body=Markup("<b>{user}</b> requested Director approval for {link}. Please review.").format(
@@ -244,6 +278,9 @@ class CrmLead(models.Model):
             "approval_state": "approved",
             "approved_by": self.env.user.id,
             "approved_date": fields.Datetime.now(),
+            "reject_reason": False,
+            "rejected_by": False,
+            "rejected_date": False,
         })
         for lead in self:
             lead.activity_feedback(["mail.mail_activity_data_todo"])
@@ -253,15 +290,12 @@ class CrmLead(models.Model):
             )
 
     def action_reject(self):
-        self._check_is_director()
-        self.with_context(approval_action=True).write({
-            "approval_state": "rejected",
-            "approved_by": self.env.user.id,
-            "approved_date": fields.Datetime.now(),
-        })
-        for lead in self:
-            lead.activity_feedback(["mail.mail_activity_data_todo"])
-            lead.message_post(
-                body=Markup("Rejected by <b>{user}</b>.").format(user=self.env.user.name),
-                subtype_xmlid="mail.mt_note",
-            )
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Reject Approval',
+            'res_model': 'crm.lead.reject.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_lead_id': self.id, 'active_id': self.id},
+        }
