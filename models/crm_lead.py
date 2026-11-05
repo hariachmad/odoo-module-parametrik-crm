@@ -2,6 +2,7 @@ from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 from datetime import datetime
 from odoo.exceptions import UserError
+from markupsafe import Markup
 
 REQUIRED_DMS_FOLDER_NAMES = [
     "Customer Requirements",
@@ -17,9 +18,16 @@ class CrmLead(models.Model):
     CONVERT_REQUIRED_CANDIDATES = [
         'prospect_source', 'est_timeline_start_date', 'est_timeline_end_date',
         'pain_point', 'business_impact', 'is_decision_maker',
-        'decision_process', 'decision_criteria', 'competitors', 'budget'
+        'decision_process', 'decision_criteria', 'competitors', 'budget','champion'
     ]
-
+    
+    champion = fields.Many2one(
+        comodel_name='res.partner',
+        string='Champion',
+        domain="[('is_company', '=', False)]",
+        help='Champion / internal advocate dari customer',
+        tracking=True,
+    )
     prospect_source = fields.Selection(
         [
             ("website", "Website"),
@@ -80,6 +88,30 @@ class CrmLead(models.Model):
         copy=False,
         tracking=True,
     )
+    
+    reject_reason = fields.Text(
+    string="Rejection Reason",
+    readonly=True,
+    copy=False,
+    tracking=True,
+    help="Alasan penolakan approval",
+    )
+
+    rejected_by = fields.Many2one(
+        'res.users',
+        string="Rejected By",
+        readonly=True,
+        copy=False,
+        tracking=True,
+    )
+
+    rejected_date = fields.Datetime(
+        string="Rejected On",
+        readonly=True,
+        copy=False,
+        tracking=True,
+    )
+    
     approved_by = fields.Many2one("res.users", readonly=True, copy=False)
     approved_date = fields.Datetime(readonly=True, copy=False)
 
@@ -195,17 +227,46 @@ class CrmLead(models.Model):
         )
 
     def action_request_approval(self):
+        director_group = self.env.ref("parametrik_crm.group_director")
+        directors = director_group.users.filtered(lambda u: u.active)
+        if not directors:
+            raise UserError("There is no user in the Director group yet.")
+
         for lead in self:
             if lead.approval_state not in ("draft", "rejected"):
                 raise UserError("Approval has already been requested or approved.")
-            lead.with_context(approval_action=True).write(
-                {"approval_state": "pending"}
+            if not self._stage_matches(lead.stage_id, STAGE_APPROVAL_FROM):
+                raise UserError(
+                    "Approval can only be requested when the lead is in the "
+                    "Qualified or New stage."
+                )
+
+            lead.with_context(approval_action=True).write({
+                "approval_state": "pending",
+                "reject_reason": False,
+                "rejected_by": False,
+                "rejected_date": False,
+            })
+
+            lead.message_post(
+                body=Markup("<b>{user}</b> requested Director approval for {link}. Please review.").format(
+                    user=self.env.user.name,
+                    link=lead._get_html_link(),
+                ),
+                partner_ids=directors.partner_id.ids,
+                message_type="comment",
+                subtype_xmlid="mail.mt_comment",
             )
-            lead.message_post(body="Director approval requested.")
-        if not self._stage_matches(lead.stage_id, STAGE_APPROVAL_FROM):
-            raise UserError(
-                "Approval can only be requested when the lead is in the Qualified stage."
-            )
+
+            for director in directors:
+                lead.activity_schedule(
+                    "mail.mail_activity_data_todo",
+                    user_id=director.id,
+                    summary="Approval Opportunity",
+                    note="Please approve or reject this opportunity.",
+                    date_deadline=fields.Date.today(),
+                )
+        return True
 
     def _check_is_director(self):
         if not self.env.user.has_group("parametrik_crm.group_director"):
@@ -217,12 +278,24 @@ class CrmLead(models.Model):
             "approval_state": "approved",
             "approved_by": self.env.user.id,
             "approved_date": fields.Datetime.now(),
+            "reject_reason": False,
+            "rejected_by": False,
+            "rejected_date": False,
         })
+        for lead in self:
+            lead.activity_feedback(["mail.mail_activity_data_todo"])
+            lead.message_post(
+                body=Markup("Approved by <b>{user}</b>.").format(user=self.env.user.name),
+                subtype_xmlid="mail.mt_note",
+            )
 
     def action_reject(self):
-        self._check_is_director()
-        self.with_context(approval_action=True).write({
-            "approval_state": "rejected",
-            "approved_by": self.env.user.id,
-            "approved_date": fields.Datetime.now(),
-        })
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Reject Approval',
+            'res_model': 'crm.lead.reject.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_lead_id': self.id, 'active_id': self.id},
+        }

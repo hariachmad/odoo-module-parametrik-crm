@@ -22,6 +22,7 @@
                     </group>
                     <group>
                         <group string="Decision Making">
+                            <field name="champion"/>
                             <field name="is_decision_maker" />
                             <field name="decision_process" />
                             <field name="decision_criteria" />

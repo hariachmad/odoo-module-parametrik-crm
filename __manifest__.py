@@ -16,10 +16,13 @@ CRM especially for parametrik
     # always loaded
     "data": [
         # 'security/ir.model.access.csv',
+        "wizard/crm_lead_reject_wizard_views.xml",
+        "security/ir.model.access.csv",
         "views/crm_lead_views.xml",
         "views/crm_lead_pipeline_no_create.xml",
         "views/crm_lead_required_field_views.xml",
         "views/crm_lead_view_form_approval.xml",
+        "views/crm_lead_view_kanban_approval.xml",
         "data/crm_lead_required_data.xml",
         "security/security.xml",
     ],

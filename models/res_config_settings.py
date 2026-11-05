@@ -48,3 +48,7 @@ class ResConfigSettings(models.TransientModel):
         string='Budget',
         config_parameter='crm_custom.req_budget',
     )
+    lead_req_champion = fields.Boolean(
+        string='Budget',
+        config_parameter='crm_custom.req_champion',
+    )
