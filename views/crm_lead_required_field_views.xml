@@ -40,7 +40,7 @@
                     <setting string="Competitors" invisible="not lead_req_convert_enabled">
                         <field name="lead_req_competitors" />
                     </setting>
-                    <setting string="Budget" invisible="not lead_req_convert_enabled">
+                    <setting string="Estimated Budget" invisible="not lead_req_convert_enabled">
                         <field name="lead_req_budget" />
                     </setting>
                     <setting string="Champion" invisible="not lead_req_convert_enabled">
