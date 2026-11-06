@@ -71,9 +71,9 @@ class CrmLead(models.Model):
         help="List of competitors"
     )
     budget = fields.Monetary(
-        string="Budget",
+        string="Estimated Budget",
         currency_field="company_currency",
-        help="Budget for this project from customer",
+        help="Estimated budget for this project from customer",
     )
     approval_state = fields.Selection(
         [
