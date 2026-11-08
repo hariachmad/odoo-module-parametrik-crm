@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="view_crm_lead_reject_wizard_form" model="ir.ui.view">
@@ -7,7 +8,7 @@
             <form string="Reject Approval">
                 <group>
                     <field name="lead_id" readonly="1"/>
-                    <field name="reason" placeholder="Tuliskan alasan penolakan..."/>
+                    <field name="reason" placeholder="Enter the reason for rejection..."/>
                 </group>
                 <footer>
                     <button name="action_confirm_reject" type="object"
