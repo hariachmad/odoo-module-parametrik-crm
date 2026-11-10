@@ -232,6 +232,12 @@ class CrmLead(models.Model):
         if not directors:
             raise UserError("There is no user in the Director group yet.")
 
+        director_partners = directors.partner_id.filtered(lambda p: p.email)
+        if not director_partners:
+            raise UserError("No director has a valid email address.")
+        
+        template = self.env.ref("parametrik_crm.email_template_approval_request")
+
         for lead in self:
             if lead.approval_state not in ("draft", "rejected"):
                 raise UserError("Approval has already been requested or approved.")
@@ -257,6 +263,15 @@ class CrmLead(models.Model):
                 message_type="comment",
                 subtype_xmlid="mail.mt_comment",
             )
+            
+            template.send_mail(
+            lead.id,
+            force_send=True,
+            email_values={
+                "recipient_ids": [(6, 0, director_partners.ids)],
+                "email_to": ",".join(director_partners.mapped("email")),
+            },
+        )
 
             for director in directors:
                 lead.activity_schedule(

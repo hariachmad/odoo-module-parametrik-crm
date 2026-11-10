@@ -12,7 +12,7 @@ CRM especially for parametrik
     "category": "Uncategorized",
     "version": "0.1",
     # any module necessary for this one to work correctly
-    "depends": ["base", "crm"],
+    "depends": ["base", "crm","mail"],
     # always loaded
     "data": [
         # 'security/ir.model.access.csv',
@@ -25,6 +25,7 @@ CRM especially for parametrik
         "views/crm_lead_view_kanban_approval.xml",
         "data/crm_lead_required_data.xml",
         "security/security.xml",
+        "data/mail_template_data.xml",
     ],
     # only loaded in demonstration mode
     "demo": [
