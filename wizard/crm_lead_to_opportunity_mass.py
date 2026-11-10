@@ -1,3 +1,4 @@
+
 from odoo import models, _
 from odoo.exceptions import UserError
 
@@ -6,7 +7,17 @@ class CrmLead2opportunityPartnerMass(models.TransientModel):
     _inherit = 'crm.lead2opportunity.partner.mass'
 
     def _get_required_lead_fields(self):
-        return ['prospect_source', 'est_timeline_start_date', 'est_timeline_end_date', 'pain_point', 'business_impact', 'is_decision_maker', 'decision_process','decision_criteria','competitors']
+        return [
+            'prospect_source',
+            'est_timeline_start_date',
+            'est_timeline_end_date',
+            'pain_point',
+            'business_impact',
+            'is_decision_maker',
+            'decision_process',
+            'decision_criteria',
+            'competitors',
+        ]
 
     def _check_required_lead_fields(self):
         self.ensure_one()
@@ -16,7 +27,10 @@ class CrmLead2opportunityPartnerMass(models.TransientModel):
         leads = self.lead_tomerge_ids
         if self.name == 'convert_and_merge':
             leads |= self.duplicated_lead_ids
-        leads = leads.filtered(lambda l: l.active and l.type == 'lead')
+
+        leads = leads.filtered(
+            lambda lead: lead.active and lead.type == 'lead'
+        )
 
         errors = []
         for lead in leads:
@@ -25,12 +39,19 @@ class CrmLead2opportunityPartnerMass(models.TransientModel):
                 for fname in field_names
                 if not lead[fname]
             ]
+
             if missing:
-                errors.append("- %s: %s" % (lead.display_name, ", ".join(missing)))
+                errors.append(
+                    "- %s: %s" % (
+                        lead.display_name,
+                        ", ".join(missing),
+                    )
+                )
 
         if errors:
             raise UserError(_(
-                "Lengkapi data berikut sebelum convert ke opportunity:\n%s",
+                "Please complete the following fields before converting "
+                "leads into opportunities:\n%s",
                 "\n".join(errors),
             ))
 

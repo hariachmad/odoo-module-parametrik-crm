@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="email_template_approval_request" model="mail.template">
+            <field name="name">Approval Request - Director Group</field>
+            <field name="model_id" ref="model_crm_lead"/>
+            <field name="email_from">{{ (object.env.user.email_formatted or object.company_id.email_formatted) }}</field>
+            <field name="email_to"></field>
+            <field name="subject">[Approval Request] {{ object.name }}</field>
+            <field name="body_html" type="html">
+                <div style="margin:0;padding:0;">
+                    <p>Dear Director,</p>
+                    <p>
+                        <strong t-out="object.env.user.name"/> has requested your approval for
+                        <a t-attf-href="{{ object.get_base_url() }}/web#id={{ object.id }}&amp;model=crm.lead&amp;view_type=form">
+                            <t t-out="object.name"/>
+                        </a>.
+                    </p>
+                    <p>Please review and approve/reject.</p>
+                </div>
+            </field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+    </data>
+</odoo>

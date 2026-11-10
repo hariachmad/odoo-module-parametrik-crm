@@ -7,7 +7,7 @@
             <form string="Reject Approval">
                 <group>
                     <field name="lead_id" readonly="1"/>
-                    <field name="reason" placeholder="Tuliskan alasan penolakan..."/>
+                    <field name="reason" placeholder="Enter the reason for rejection..."/>
                 </group>
                 <footer>
                     <button name="action_confirm_reject" type="object"
