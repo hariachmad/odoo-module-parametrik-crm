@@ -5,6 +5,12 @@
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_lead_view_form" />
         <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <field name="is_my_lead" invisible="1"/>
+            </xpath>
+            <xpath expr="//chatter" position="attributes">
+                <attribute name="invisible">not is_my_lead</attribute>
+            </xpath>
             <xpath expr="//notebook" position="inside">
                 <page string="Mandatory" name="custom_info">
                     <group>
