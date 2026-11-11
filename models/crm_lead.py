@@ -113,7 +113,20 @@ class CrmLead(models.Model):
     )
     
     approved_by = fields.Many2one("res.users", readonly=True, copy=False)
-    approved_date = fields.Datetime(readonly=True, copy=False)
+    approved_date = fields.Datetime(readonly=True, copy=False)  
+    
+    is_my_lead = fields.Boolean(compute='_compute_is_my_lead')
+
+    @api.depends_context('uid')
+    def _compute_is_my_lead(self):
+        user = self.env.user
+        is_exempt = user.has_group('parametrik_crm.group_director')
+        for lead in self:
+            lead.is_my_lead = (
+                is_exempt
+                or not lead.id
+                or lead.user_id == user
+            )  
 
     def _stage_matches(self, stage, names):
         return bool(stage) and (stage.name or "").strip().casefold() in [

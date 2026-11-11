@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_partner_form_hide_contact_info" model="ir.ui.view">
+        <field name="name">res.partner.form.hide.contact.info</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <field name="is_my_contact" invisible="1"/>
+            </xpath>
+            <xpath expr="//chatter" position="attributes">
+                <attribute name="invisible">not is_my_contact</attribute>
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                <field name="is_my_contact" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//sheet//field[@name='phone'][1]" position="attributes">
+                <attribute name="invisible">not is_my_contact</attribute>
+            </xpath>
+            <xpath expr="//sheet//field[@name='mobile'][1]" position="attributes">
+                <attribute name="invisible">not is_my_contact</attribute>
+            </xpath>
+            <xpath expr="//sheet//field[@name='email'][1]" position="attributes">
+                <attribute name="invisible">not is_my_contact</attribute>
+            </xpath>
+            <xpath expr="//sheet//field[@name='website'][1]" position="attributes">
+                <attribute name="invisible">not is_my_contact</attribute>
+            </xpath>
+            <xpath expr="//sheet//field[@name='function'][1]" position="attributes">
+                <attribute name="invisible">not is_my_contact</attribute>
+            </xpath>
+
+            <xpath expr="//sheet//field[@name='vat'][1]" position="attributes">
+                <attribute name="invisible">not is_my_contact</attribute>
+            </xpath>
+
+            <xpath expr="//sheet//field[@name='street'][1]" position="attributes">
+                <attribute name="invisible">not is_my_contact</attribute>
+            </xpath>
+            <xpath expr="//sheet//field[@name='street2'][1]" position="attributes">
+                <attribute name="invisible">not is_my_contact</attribute>
+            </xpath>
+            <xpath expr="//sheet//field[@name='city'][1]" position="attributes">
+                <attribute name="invisible">not is_my_contact</attribute>
+            </xpath>
+            <xpath expr="//sheet//field[@name='state_id'][1]" position="attributes">
+                <attribute name="invisible">not is_my_contact</attribute>
+            </xpath>
+            <xpath expr="//sheet//field[@name='zip'][1]" position="attributes">
+                <attribute name="invisible">not is_my_contact</attribute>
+            </xpath>
+            <xpath expr="//sheet//field[@name='country_id'][1]" position="attributes">
+                <attribute name="invisible">not is_my_contact</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_tree_hide_contact_info" model="ir.ui.view">
+        <field name="name">res.partner.list.hide.contact.info</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='display_name']" position="after">
+                <field name="is_my_contact" column_invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='phone']" position="attributes">
+                <attribute name="invisible">not is_my_contact</attribute>
+            </xpath>
+            <xpath expr="//field[@name='email']" position="attributes">
+                <attribute name="invisible">not is_my_contact</attribute>
+            </xpath>
+            <xpath expr="//field[@name='city']" position="attributes">
+                <attribute name="invisible">not is_my_contact</attribute>
+            </xpath>
+            <xpath expr="//field[@name='state_id']" position="attributes">
+                <attribute name="invisible">not is_my_contact</attribute>
+            </xpath>
+            <xpath expr="//field[@name='country_id']" position="attributes">
+                <attribute name="invisible">not is_my_contact</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_lead_form_hide_contact_info" model="ir.ui.view">
+        <field name="name">crm.lead.form.hide.contact.info</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <field name="is_my_lead" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//sheet//field[@name='email_from'][1]" position="attributes">
+                <attribute name="invisible">not is_my_lead</attribute>
+            </xpath>
+            <xpath expr="//sheet//field[@name='phone'][1]" position="attributes">
+                <attribute name="invisible">not is_my_lead</attribute>
+            </xpath>
+            <xpath expr="//sheet//field[@name='mobile'][1]" position="attributes">
+                <attribute name="invisible">not is_my_lead</attribute>
+            </xpath>
+            <xpath expr="//sheet//field[@name='website'][1]" position="attributes">
+                <attribute name="invisible">not is_my_lead</attribute>
+            </xpath>
+            <xpath expr="//sheet//field[@name='function'][1]" position="attributes">
+                <attribute name="invisible">not is_my_lead</attribute>
+            </xpath>
+            <xpath expr="//sheet//field[@name='contact_name'][1]" position="attributes">
+                <attribute name="invisible">not is_my_lead</attribute>
+            </xpath>
+
+            <!-- Alamat -->
+            <xpath expr="//sheet//field[@name='street'][1]" position="attributes">
+                <attribute name="invisible">not is_my_lead</attribute>
+            </xpath>
+            <xpath expr="//sheet//field[@name='street2'][1]" position="attributes">
+                <attribute name="invisible">not is_my_lead</attribute>
+            </xpath>
+            <xpath expr="//sheet//field[@name='city'][1]" position="attributes">
+                <attribute name="invisible">not is_my_lead</attribute>
+            </xpath>
+            <xpath expr="//sheet//field[@name='state_id'][1]" position="attributes">
+                <attribute name="invisible">not is_my_lead</attribute>
+            </xpath>
+            <xpath expr="//sheet//field[@name='zip'][1]" position="attributes">
+                <attribute name="invisible">not is_my_lead</attribute>
+            </xpath>
+            <xpath expr="//sheet//field[@name='country_id'][1]" position="attributes">
+                <attribute name="invisible">not is_my_lead</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_lead_tree_hide_contact_info" model="ir.ui.view">
+        <field name="name">crm.lead.list.hide.contact.info</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_leads"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="is_my_lead" column_invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='email_from']" position="attributes">
+                <attribute name="invisible">not is_my_lead</attribute>
+            </xpath>
+            <xpath expr="//field[@name='phone']" position="attributes">
+                <attribute name="invisible">not is_my_lead</attribute>
+            </xpath>
+            <xpath expr="//field[@name='city']" position="attributes">
+                <attribute name="invisible">not is_my_lead</attribute>
+            </xpath>
+            <xpath expr="//field[@name='state_id']" position="attributes">
+                <attribute name="invisible">not is_my_lead</attribute>
+            </xpath>
+            <xpath expr="//field[@name='country_id']" position="attributes">
+                <attribute name="invisible">not is_my_lead</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_lead_oppor_tree_hide_contact_info" model="ir.ui.view">
+        <field name="name">crm.lead.oppor.list.hide.contact.info</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="is_my_lead" column_invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='email_from']" position="attributes">
+                <attribute name="invisible">not is_my_lead</attribute>
+            </xpath>
+            <xpath expr="//field[@name='phone']" position="attributes">
+                <attribute name="invisible">not is_my_lead</attribute>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
