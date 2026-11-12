@@ -1,0 +1,32 @@
+.btn-primary {
+    --btn-color: #08240b;                 
+    --btn-bg: #17b624;
+    --btn-border-color: #17b624;
+    --btn-hover-color: #08240b;
+    --btn-hover-bg: #106817;              
+    --btn-hover-border-color: #106817;
+    --btn-active-color: #08240b;
+    --btn-active-bg: #b5c80a;
+    --btn-active-border-color: #b5c80a;
+    --btn-focus-shadow-rgb: 23, 182, 36;
+    --btn-disabled-color: #08240b;
+    --btn-disabled-bg: #17b624;
+    --btn-disabled-border-color: #17b624;
+}
+
+.btn-secondary {
+    --btn-color: #0e6b17;
+    --btn-bg: #ffffff;
+    --btn-border-color: #17b624;
+    --btn-hover-color: #08240b;
+    --btn-hover-bg: #106817;
+    --btn-hover-border-color: #106817;
+    --btn-active-color: #08240b;
+    --btn-active-bg: #b5c80a;
+    --btn-active-border-color: #b5c80a;
+}
+
+.btn-link {
+    --btn-color: #0e6b17;
+    --btn-hover-color: #17b624;
+}

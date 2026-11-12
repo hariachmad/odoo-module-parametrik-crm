@@ -16,6 +16,7 @@ CRM especially for parametrik
     # always loaded
     "data": [
         # 'security/ir.model.access.csv',
+        "security/security.xml",
         "wizard/crm_lead_reject_wizard_views.xml",
         "security/ir.model.access.csv",
         "views/crm_lead_views.xml",
@@ -25,7 +26,6 @@ CRM especially for parametrik
         "views/crm_lead_view_kanban_approval.xml",
         "views/crm_lead_hide_contact_views.xml",
         "data/crm_lead_required_data.xml",
-        "security/security.xml",
         "data/mail_template_data.xml",
     ],
     # only loaded in demonstration mode
@@ -35,4 +35,13 @@ CRM especially for parametrik
     "installable": True,
     "application": False,
     "license": "LGPL-3",
+    'assets': {
+    'web._assets_primary_variables': [
+        ('after', 'web/static/src/scss/primary_variables.scss',
+         'parametrik_crm/static/src/scss/primary_variables.scss'),
+    ],
+    'web.assets_backend': [
+    'parametrik_crm/static/src/scss/custom.scss',
+],
+},
 }

@@ -8,6 +8,14 @@ REQUIRED_DMS_FOLDER_NAMES = [
     "Customer Requirements",
 ]
 
+REQUIRED_DMS_FOLDER_NAMES_APPROVAL = [
+    "Cost Estimation",
+    "Presentation File",           
+    "Customer Requirements",  
+    "Solution Concept",
+    "Technical Solution"
+]
+
 STAGE_APPROVAL_FROM = ["Qualified","New"]
 STAGE_APPROVAL_TO = ["Proposition", "Won"]
 
@@ -196,16 +204,17 @@ class CrmLead(models.Model):
             if 'crm_custom.req_%s' % field_name in enabled
         ]
 
-    def _get_missing_dms_folders(self):
+    def _get_missing_dms_folders(self, folder_names=None):
         self.ensure_one()
+        folder_names = folder_names or REQUIRED_DMS_FOLDER_NAMES
         roots = self.dms_directory_ids
         if not roots:
-            return list(REQUIRED_DMS_FOLDER_NAMES)
+            return list(folder_names)
         Directory = self.env["dms.directory"].sudo()
         File = self.env["dms.file"].sudo()
         lead_dirs = Directory.search([("id", "child_of", roots.ids)])
         missing = []
-        for name in REQUIRED_DMS_FOLDER_NAMES:
+        for name in folder_names:
             folders = lead_dirs.filtered(
                 lambda d: (d.name or "").strip().casefold() == name.casefold()
             )
@@ -214,6 +223,23 @@ class CrmLead(models.Model):
             ):
                 missing.append(name)
         return missing
+    
+    def _check_required_dms_for_approval(self):
+        errors = []
+        for lead in self:
+            missing = lead._get_missing_dms_folders(REQUIRED_DMS_FOLDER_NAMES_APPROVAL)
+            if missing:
+                errors.append(
+                    "- %s: %s" % (
+                        lead.display_name,
+                        ", ".join("File in folder '%s'" % m for m in missing),
+                    )
+                )
+        if errors:
+            raise UserError(
+                "Please upload files in the following DMS folders (Documents tab) "
+                "before requesting approval:\n%s" % "\n".join(errors)
+            )
 
     def _check_required_fields_for_convert(self):
         field_names = self._get_required_fields_for_convert()
@@ -240,6 +266,7 @@ class CrmLead(models.Model):
         )
 
     def action_request_approval(self):
+        self._check_required_dms_for_approval()
         director_group = self.env.ref("parametrik_crm.group_director")
         directors = director_group.users.filtered(lambda u: u.active)
         if not directors:
