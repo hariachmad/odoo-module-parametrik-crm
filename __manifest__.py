@@ -27,6 +27,7 @@ CRM especially for parametrik
         "views/crm_lead_hide_contact_views.xml",
         "data/crm_lead_required_data.xml",
         "data/mail_template_data.xml",
+        "views/crm_lead_hide_extra_information_views.xml"
     ],
     # only loaded in demonstration mode
     "demo": [
