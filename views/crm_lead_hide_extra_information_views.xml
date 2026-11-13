@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="crm_lead_form_hide_extra_tab" model="ir.ui.view">
+        <field name="name">crm.lead.form.hide.extra.tab</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="hide_extra_info" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//page[@name='lead']" position="attributes">
+                <attribute name="invisible" add="hide_extra_info" separator="or"/>
+            </xpath>
+
+            <xpath expr="//page[@name='extra']" position="attributes">
+                <attribute name="invisible" add="hide_extra_info" separator="or"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

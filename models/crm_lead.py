@@ -29,6 +29,8 @@ class CrmLead(models.Model):
         'decision_process', 'decision_criteria', 'competitors', 'budget','champion'
     ]
     
+    hide_extra_info = fields.Boolean(compute='_compute_hide_extra_info')
+    
     champion = fields.Many2one(
         comodel_name='res.partner',
         string='Champion',
@@ -124,6 +126,12 @@ class CrmLead(models.Model):
     approved_date = fields.Datetime(readonly=True, copy=False)  
     
     is_my_lead = fields.Boolean(compute='_compute_is_my_lead')
+    
+    @api.depends('user_id')
+    @api.depends_context('uid')
+    def _compute_hide_extra_info(self):
+        for lead in self:
+            lead.hide_extra_info = lead.user_id != self.env.user
 
     @api.depends_context('uid')
     def _compute_is_my_lead(self):
